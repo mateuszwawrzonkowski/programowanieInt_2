@@ -1,3 +1,5 @@
+import * as user from "./services/user";
+
 export default {
   Query: {
     allUsers: (parent, args, { models }) => models.User.findAll(),
@@ -5,13 +7,14 @@ export default {
       models.User.findOne({ where: { id } }),
   },
   Mutation: {
-    createUser: (
+    registerUser: (
       parent,
-      { firstname, lastname, email, passwordHash },
+      { firstName, lastName, email, password },
       { models }
-    ) => models.User.create({ firstname, lastname, email, passwordHash }),
-    updateUser: (parent, { id, firstname, lastname }, { models }) =>
-      models.User.update({ firstname, lastname, email }, { where: { id } }),
-    deleteUser: (parent, { id }) => models.User.destroy({ where: { id } }),
+    ) => user.register(firstName, lastName, email, password),
+    updateUser: (parent, { id, firstName, email }, { models }) =>
+      models.User.update({ firstName, email }, { where: { id } }),
+    deleteUser: (parent, { id }, { models }) =>
+      models.User.destroy({ where: { id } }),
   },
 };
