@@ -12,6 +12,8 @@ export default {
       { firstName, lastName, email, password },
       { models }
     ) => user.register(firstName, lastName, email, password),
+    loginUser: (parent, { email, password }, { models }) =>
+      user.login(email, password),
     updateUser: (parent, { id, firstName, email }, { models }) =>
       models.User.update({ firstName, email }, { where: { id } }),
     deleteUser: (parent, { id }, { models }) =>
