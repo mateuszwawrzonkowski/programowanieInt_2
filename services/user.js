@@ -2,8 +2,10 @@ import bcrypt from "bcrypt";
 import models from "../db/models";
 import jwt from "jsonwebtoken";
 
+const SECRET = "secret123123123";
+
 const generateToken = (user) =>
-  jwt.sign({ userId: user.id }, "secret123", { expiresIn: "30d" });
+  jwt.sign({ userId: user.id }, SECRET, { expiresIn: "30d" });
 
 export const register = async (firstName, lastName, email, password) => {
   const passwordHash = await bcrypt.hash(password, 10);
@@ -23,4 +25,18 @@ export const login = async (email, password) => {
   }
 
   return { token: generateToken(user), user };
+};
+
+export const getUserIdMiddleware = async (req) => {
+  const token = req.headers.authorization;
+
+  try {
+    if (token) {
+      const { userId } = await jwt.verify(token, SECRET);
+      req.userId = userId;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+  req.next();
 };
